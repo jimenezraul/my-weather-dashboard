@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
     <title>My Weather Dashboard</title>
 </head>
+
 <body>
     <header class="h6 bg-grad">
         <h1 class="text-white text-center p-4">Weather Dashboard</h1>
@@ -17,15 +21,18 @@
             <div class="row">
                 <div class="col-12 col-lg-3 d-flex flex-column">
                     <h2>Search for a City:</h2>
-                    <input class="form-control " type="text" placeholder="San Diego">
-                    <button type="button" class="btn btn-search mt-3">Search</button>
+                    <input id="search" class="form-control border-dark" type="text" placeholder="San Diego">
+                    <div id="message"></div>
+                    <button id="search-btn" type="button" class="btn btn-search mt-3">Search</button>
                     <div class="border-top border-dark pt-4 d-flex flex-column mt-4">
                         <button type="button" class="btn btn-history">Austin</button>
                     </div>
                 </div>
                 <div id="weather-col" class="col-12 col-lg-9 mt-2">
-                    <div class="border border-dark p-3 rounded">
-                        <h2>Atlanta (3/30/2021) <img class="weather-icon btn-history rounded-circle" src="https://openweathermap.org/img/wn/10d@4x.png" alt=""></h2>
+                    <div id="city-message"></div>
+                    <div class="bg-white border border-dark p-3 rounded">
+                        <h2>Atlanta (3/30/2021) <img class="weather-icon btn-history rounded-circle"
+                                src="https://openweathermap.org/img/wn/10d@4x.png" alt=""></h2>
                         <p>Temp: 74.01ºF</p>
                         <p>Wind: 6.67 MPH</p>
                         <p>Humidity: 46 %</p>
@@ -36,46 +43,53 @@
                         <div class="row justify-content-between text-white p-2">
                             <div class="rounded col-5 col-lg-3 col-xl-2 bg-card p-2 mt-1">
                                 <h4 class="">3/31/2021</h4>
-                                <img class="weather-icon btn-history rounded-circle my-2" src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
+                                <img class="weather-icon btn-history rounded-circle my-2"
+                                    src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
                                 <p>Temp: 73.72ºF</p>
                                 <p>Wind: 9.53 MPH</p>
                                 <p>Himidity: 66 %</p>
                             </div>
                             <div class="rounded col-5 col-lg-3 offset-lg-1 col-xl-2 offset-xl-0 bg-card p-2 mt-1">
                                 <h4 class="">3/31/2021</h4>
-                                <img class="weather-icon btn-history rounded-circle my-2" src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
+                                <img class="weather-icon btn-history rounded-circle my-2"
+                                    src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
                                 <p>Temp: 73.72ºF</p>
                                 <p>Wind: 9.53 MPH</p>
                                 <p>Himidity: 66 %</p>
                             </div>
                             <div class="rounded col-5 col-lg-3 offset-lg-1 col-xl-2 offset-xl-0 bg-card p-2 mt-1">
                                 <h4 class="">3/31/2021</h4>
-                                <img class="weather-icon btn-history rounded-circle my-2" src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
+                                <img class="weather-icon btn-history rounded-circle my-2"
+                                    src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
                                 <p>Temp: 73.72ºF</p>
                                 <p>Wind: 9.53 MPH</p>
                                 <p>Himidity: 66 %</p>
                             </div>
                             <div class="rounded col-5 col-lg-3 col-xl-2 bg-card p-2 mt-1">
                                 <h4 class="">3/31/2021</h4>
-                                <img class="weather-icon btn-history rounded-circle my-2" src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
+                                <img class="weather-icon btn-history rounded-circle my-2"
+                                    src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
                                 <p>Temp: 73.72ºF</p>
                                 <p>Wind: 9.53 MPH</p>
                                 <p>Himidity: 66 %</p>
                             </div>
                             <div class="rounded col-5 col-lg-3 offset-lg-1 col-xl-2 offset-xl-0 bg-card p-2 mt-1">
                                 <h4 class="">3/31/2021</h4>
-                                <img class="weather-icon btn-history rounded-circle my-2" src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
+                                <img class="weather-icon btn-history rounded-circle my-2"
+                                    src="https://openweathermap.org/img/wn/10d@4x.png" alt="">
                                 <p>Temp: 73.72ºF</p>
                                 <p>Wind: 9.53 MPH</p>
                                 <p>Himidity: 66 %</p>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
     <script src="./assets/js/script.js"></script>
 </body>
+
 </html>

@@ -1,3 +1,7 @@
+body{
+    background-color: #f7f7f7;
+}
+
 .bg-grad{
     background: linear-gradient(to left, #20084B, #5098E6);
 }
@@ -5,6 +9,11 @@
 .btn-search{
     color: white;
     background-color: #5098E6;
+}
+
+.btn-search:hover{
+    color: white;
+    background-color: #4787cc;
 }
 
 .btn-history{
