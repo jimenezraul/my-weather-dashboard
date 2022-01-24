@@ -1,0 +1,20 @@
+.bg-grad{
+    background: linear-gradient(to left, #20084B, #5098E6);
+}
+
+.btn-search{
+    color: white;
+    background-color: #5098E6;
+}
+
+.btn-history{
+    background-color: #AEAEAE;
+}
+
+.bg-card{
+    background-color: #2D3E50;
+}
+
+.weather-icon{
+    height: 50px;
+}
