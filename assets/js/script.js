@@ -4,14 +4,16 @@ var message = $("#message");
 var weatherCol = $("#weather-col");
 var forecast = $("#forecast");
 var forecastCol = $("#forecast-col");
+var historyEl = $("#history");
 var cityHistory = {};
 var apiKey = "2c55cf825b3d6637f09bec8a5d37fed0";
 
 $(document).ready(onLoad());
 
 var showWeather = function (data) {
+  var today = moment().format("MM/DD/YYYY");
   weatherCol.addClass("bg-white border border-dark p-3 rounded");
-  var h2 = `<h2>${data.city} (3/30/2021) <img class='weather-icon btn-history rounded-circle' src='https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png' alt='' /></h2>`;
+  var h2 = `<h2>${data.city} (${today}) <img class='weather-icon btn-history rounded-circle' src='https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png' alt='' /></h2>`;
   var p = `<p>Temp: ${data.temp}ºF</p>
     <p>Wind: ${data.wind} MPH</p>
     <p>Humidity: ${data.humidity} %</p>
@@ -28,13 +30,15 @@ var showFiveDaysWeather = function (arr) {
     text = text.split("-");
     text = `${text[1]}/${text[2]}/${text[0]}`;
     var div = $("<div>");
-    div.addClass("rounded col-5 col-lg-3 col-xl-2 offset-xl-0 bg-card p-2 mt-1");
+    div.addClass(
+      "rounded col-5 col-lg-3 col-xl-2 offset-xl-0 bg-card p-2 mt-1"
+    );
     // add class to every 2nd div except the first
     var index = arr.indexOf(day) + 1;
     if (index % 2 === 0 && index !== 4) {
       div.addClass("offset-lg-1");
     } else if (index % 3 === 0) {
-        div.addClass("offset-lg-1");
+      div.addClass("offset-lg-1");
     }
     var h4 = `<h4>${text}</h4>`;
     var img = `<img class='weather-icon btn-history rounded-circle my-2' src="https://openweathermap.org/img/wn/${day.weather[0].icon}@4x.png" alt=""/>`;
@@ -46,6 +50,8 @@ var showFiveDaysWeather = function (arr) {
     div.append(p);
     forecast.append(div);
   });
+  showHistoryEl(cityHistory);
+  saveWeather();
 };
 
 var errorMessage = function (message) {
@@ -58,7 +64,7 @@ var errorMessage = function (message) {
 };
 
 var saveWeather = function () {
-  console.log(cityHistory);
+  localStorage.setItem("cities", JSON.stringify(cityHistory));
 };
 
 var getFiveDaysWeather = function (city) {
@@ -88,14 +94,15 @@ var getFiveDaysWeather = function (city) {
 var getUviIndex = async function (coord) {
   var lat = coord.lat;
   var lon = coord.lon;
-  var URL = `https://api.openweathermap.org/data/2.5/uvi?appid=${apiKey}&lat=${lat}&lon=${lon}`;
+  var URL = `https://api.openweathermap.org/data/2.5/onecall?appid=${apiKey}&lat=${lat}&lon=${lon}`;
   var res = await fetch(URL);
   res = await res.json();
-  return res.value;
+  return res.current.uvi;
 };
 
 // remove elements from weatherCol parent
 var resetEl = function () {
+  historyEl.empty();
   weatherCol.empty();
   weatherCol.removeClass("bg-white border border-dark p-3 rounded");
   forecast.empty();
@@ -140,7 +147,6 @@ var checkWeather = function (city) {
     });
   }
   getWeather(city);
-  saveWeather();
 };
 
 var searchHandler = function (e) {
@@ -161,14 +167,30 @@ var searchHandler = function (e) {
   checkWeather(city);
 };
 
+function showHistoryEl(data) {
+  data.city.forEach((weather) => {
+    var btn = $("<button>");
+    btn.addClass("btn btn-history mt-1 mb-1");
+    btn.text(weather.city);
+    btn.attr("data-id", data.city.indexOf(weather));
+    historyEl.append(btn);
+    btn.click(function () {
+      resetEl();
+      showWeather(weather);
+      showFiveDaysWeather(weather.forecast);
+    });
+  });
+};
+
 function onLoad() {
-  var cities = localStorage.getItem("cities");
+  var cities = JSON.parse(localStorage.getItem("cities"));
   if (!cities) {
     cityHistory = {
       city: [],
     };
   } else {
     cityHistory = cities;
+    showHistoryEl(cityHistory);
   }
 }
 
