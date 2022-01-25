@@ -139,6 +139,7 @@ var getWeather = function (city) {
           };
           //push city weather to cityHistory
           cityHistory.city.push(weather);
+          resetEl();
           getFiveDaysWeather(city);
           showWeather(weather);
         });
@@ -151,6 +152,7 @@ var getWeather = function (city) {
       // message on connection error
       errorMessage("Check your connection and try again");
     });
+  resetEl();
   showHistoryEl(cityHistory);
 };
 
@@ -196,6 +198,13 @@ var searchHandler = function (e) {
   }
 };
 
+// history btn handler
+var historyBtnHandler = function (num) {
+    resetEl();
+    showWeather(cityHistory.city[num]);
+    showFiveDaysWeather(cityHistory.city[num].forecast);
+};
+
 // show city history
 function showHistoryEl(data) {
   data.city.forEach((weather) => {
@@ -204,12 +213,10 @@ function showHistoryEl(data) {
     btn.text(weather.city);
     historyEl.addClass("border-top border-dark");
     historyEl.append(btn);
-    btn.click(function () {
-      resetEl();
-      showWeather(weather);
-      showFiveDaysWeather(weather.forecast);
-    });
   });
+    $(".btn-history").click(function () {
+        historyBtnHandler($(this).index());
+    });
 }
 
 // on page load get local storage history and set object
