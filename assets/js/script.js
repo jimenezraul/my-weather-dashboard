@@ -170,16 +170,25 @@ var checkWeatherExist = function (city) {
 var searchHandler = function (e) {
   e.preventDefault();
   var city = search.val().trim();
+
   // city is empty show warning message
   if (!city) {
     if ($("#message p").length === 0) {
-      var p = "<p class='text-danger mt-3'>City can't be blank.</p>";
+      var p = "<p class='text-danger mt-3'>City name can't be blank.</p>";
       message.append(p);
       setTimeout(function () {
         $("#message p").remove();
       }, 3000);
       return;
     }
+  } else if (city.match(/\d/g)) {
+    var p = "<p class='text-danger mt-3'>City name can't contain numbers.</p>";
+    message.append(p);
+    setTimeout(function () {
+      $("#message p").remove();
+    }, 3000);
+    search.val("");
+    return;
   } else {
     search.val("");
     resetEl();
