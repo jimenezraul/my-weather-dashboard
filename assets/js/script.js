@@ -1,3 +1,4 @@
+// set all id's to variables
 var search = $("#search");
 var searchBtn = $("#search-btn");
 var message = $("#message");
@@ -5,15 +6,20 @@ var weatherCol = $("#weather-col");
 var forecast = $("#forecast");
 var forecastCol = $("#forecast-col");
 var historyEl = $("#history");
+// set city history object
 var cityHistory = {};
+// open weather api
 var apiKey = "2c55cf825b3d6637f09bec8a5d37fed0";
 
+// on load
 $(document).ready(onLoad());
 
+// show weather
 var showWeather = function (data) {
   var today = moment().format("MM/DD/YYYY");
   weatherCol.addClass("bg-white border border-dark p-3 rounded");
-  var h2 = `<h2>${data.city} (${today}) <img class='weather-icon btn-history rounded-circle' src='https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png' alt='' /></h2>`;
+  var h2 = `<h2>${data.city} (${today}) <img class='weather-icon btn-history rounded-circle' 
+  src='https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png' alt='' /></h2>`;
   var p = `<p>Temp: ${data.temp}ºF</p>
     <p>Wind: ${data.wind} MPH</p>
     <p>Humidity: ${data.humidity} %</p>
@@ -22,9 +28,10 @@ var showWeather = function (data) {
   weatherCol.append(p);
 };
 
+// show 5 days forecast
 var showFiveDaysWeather = function (arr) {
   forecastCol.removeClass("d-none");
-  //create a div for each day
+  // create all elements for each day
   arr.forEach((day) => {
     var text = day.dt_txt.split(" ")[0];
     text = text.split("-");
@@ -33,15 +40,14 @@ var showFiveDaysWeather = function (arr) {
     div.addClass(
       "rounded col-5 col-lg-3 col-xl-2 offset-xl-0 bg-card p-2 mt-1"
     );
-    // add class to every 2nd div except the first
+    // add class to 2nd div and 3rd div
     var index = arr.indexOf(day) + 1;
-    if (index % 2 === 0 && index !== 4) {
-      div.addClass("offset-lg-1");
-    } else if (index % 3 === 0) {
+    if (index === 2 || index === 3) {
       div.addClass("offset-lg-1");
     }
     var h4 = `<h4>${text}</h4>`;
-    var img = `<img class='weather-icon btn-history rounded-circle my-2' src="https://openweathermap.org/img/wn/${day.weather[0].icon}@4x.png" alt=""/>`;
+    var img = `<img class='weather-icon btn-history rounded-circle my-2' 
+    src="https://openweathermap.org/img/wn/${day.weather[0].icon}@4x.png" alt=""/>`;
     var p = `<p>Temp: ${day.main.temp}ºF</p>
         <p>Wind: ${day.wind.speed} MPH</p>
         <p>Humidity: ${day.main.humidity} %</p>`;
@@ -54,6 +60,7 @@ var showFiveDaysWeather = function (arr) {
   saveWeather();
 };
 
+// show error message
 var errorMessage = function (message) {
   var h3 = `<h3><span class="badge bg-danger">${message}</span></h3>`;
   $("#city-message").append(h3);
@@ -63,10 +70,12 @@ var errorMessage = function (message) {
   return;
 };
 
+// save weather to local storage
 var saveWeather = function () {
   localStorage.setItem("cities", JSON.stringify(cityHistory));
 };
 
+// fetch 5 days forecast
 var getFiveDaysWeather = function (city) {
   var url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=imperial`;
   fetch(url).then(function (response) {
@@ -91,6 +100,7 @@ var getFiveDaysWeather = function (city) {
   });
 };
 
+// get uvi index
 var getUviIndex = async function (coord) {
   var lat = coord.lat;
   var lon = coord.lon;
@@ -100,8 +110,9 @@ var getUviIndex = async function (coord) {
   return res.current.uvi;
 };
 
-// remove elements from weatherCol parent
+// remove all elements
 var resetEl = function () {
+  historyEl.removeClass("border-top border-dark");
   historyEl.empty();
   weatherCol.empty();
   weatherCol.removeClass("bg-white border border-dark p-3 rounded");
@@ -109,6 +120,7 @@ var resetEl = function () {
   forecastCol.addClass("d-none");
 };
 
+// fetch weather
 var getWeather = function (city) {
   var url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
   fetch(url)
@@ -125,20 +137,25 @@ var getWeather = function (city) {
             forecast: [],
             wind: data.wind.speed,
           };
+          //push city weather to cityHistory
           cityHistory.city.push(weather);
           getFiveDaysWeather(city);
           showWeather(weather);
         });
       } else {
+        // message on city not found
         errorMessage(`City ${response.statusText}`);
       }
     })
     .catch(function (e) {
-      console.log(e);
+      // message on connection error
+      errorMessage("Check your connection and try again");
+      showHistoryEl(cityHistory);
     });
 };
 
-var checkWeather = function (city) {
+// check if city is in history
+var checkWeatherExist = function (city) {
   if (!!cityHistory.city.length) {
     cityHistory.city.forEach((weather) => {
       if (weather.city.toUpperCase() === city.toUpperCase()) {
@@ -149,30 +166,35 @@ var checkWeather = function (city) {
   getWeather(city);
 };
 
+// search handler
 var searchHandler = function (e) {
   e.preventDefault();
   var city = search.val().trim();
+  // city is empty show warning message
   if (!city) {
     if ($("#message p").length === 0) {
-      var p = "<p class='text-danger'>City must be filled out</p>";
+      var p = "<p class='text-danger mt-3'>City can't be blank.</p>";
       message.append(p);
       setTimeout(function () {
         $("#message p").remove();
       }, 3000);
       return;
     }
+  } else {
+    search.val("");
+    resetEl();
+    checkWeatherExist(city);
   }
-  search.val("");
-  resetEl();
-  checkWeather(city);
 };
 
+// show city history
 function showHistoryEl(data) {
   data.city.forEach((weather) => {
     var btn = $("<button>");
     btn.addClass("btn btn-history mt-1 mb-1");
     btn.text(weather.city);
     btn.attr("data-id", data.city.indexOf(weather));
+    historyEl.addClass("border-top border-dark");
     historyEl.append(btn);
     btn.click(function () {
       resetEl();
@@ -180,8 +202,9 @@ function showHistoryEl(data) {
       showFiveDaysWeather(weather.forecast);
     });
   });
-};
+}
 
+// on page load get local storage history and set object
 function onLoad() {
   var cities = JSON.parse(localStorage.getItem("cities"));
   if (!cities) {
@@ -194,4 +217,5 @@ function onLoad() {
   }
 }
 
+// listen to search button click
 searchBtn.click(searchHandler);

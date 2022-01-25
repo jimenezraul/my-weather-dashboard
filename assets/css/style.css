@@ -1,29 +1,40 @@
-body{
+/* body background */
+body {
     background-color: #f7f7f7;
 }
 
-.bg-grad{
+/* header gradient background */
+.bg-grad {
     background: linear-gradient(to left, #20084B, #5098E6);
 }
 
-.btn-search{
+/* search btn */
+.btn-search {
     color: white;
     background-color: #5098E6;
 }
 
-.btn-search:hover{
+.btn-search:hover {
     color: white;
     background-color: #4787cc;
 }
 
-.btn-history{
+/* history btn background */
+.btn-history {
     background-color: #AEAEAE;
 }
 
-.bg-card{
+/* 5 days card background */
+.bg-card {
     background-color: #2D3E50;
 }
 
-.weather-icon{
+/* icon size */
+.weather-icon {
     height: 50px;
+}
+
+/* message indent */
+#message p {
+    text-indent: 5px;
 }
