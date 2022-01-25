@@ -150,8 +150,8 @@ var getWeather = function (city) {
     .catch(function (e) {
       // message on connection error
       errorMessage("Check your connection and try again");
-      showHistoryEl(cityHistory);
     });
+  showHistoryEl(cityHistory);
 };
 
 // check if city is in history
@@ -193,7 +193,6 @@ function showHistoryEl(data) {
     var btn = $("<button>");
     btn.addClass("btn btn-history mt-1 mb-1");
     btn.text(weather.city);
-    btn.attr("data-id", data.city.indexOf(weather));
     historyEl.addClass("border-top border-dark");
     historyEl.append(btn);
     btn.click(function () {
