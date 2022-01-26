@@ -17,13 +17,25 @@ $(document).ready(onLoad());
 // show weather
 var showWeather = function (data) {
   var today = moment().format("MM/DD/YYYY");
+  var uvi_index = data.uvi;
+  var uvi_color = "";
+
+  // set uvi color
+  if (uvi_index <= 2) {
+    uvi_color = "bg-success";
+  } else if (uvi_index > 2 && uvi_index <= 5) {
+    uvi_color = "bg-warning";
+  } else {
+    uvi_color = "bg-danger";
+  }
+
   weatherCol.addClass("bg-white border border-dark p-3 rounded");
   var h2 = `<h2>${data.city} (${today}) <img class='weather-icon btn-history rounded-circle' 
   src='https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png' alt='' /></h2>`;
   var p = `<p>Temp: ${data.temp}ºF</p>
     <p>Wind: ${data.wind} MPH</p>
     <p>Humidity: ${data.humidity} %</p>
-    <p>UV index: <span class="badge bg-success p-2">${data.uvi}</span></p>`;
+    <p>UV index: <span class="badge ${uvi_color} p-2">${uvi_index}</span></p>`;
   weatherCol.append(h2);
   weatherCol.append(p);
 };
@@ -56,7 +68,6 @@ var showFiveDaysWeather = function (arr) {
     div.append(p);
     forecast.append(div);
   });
-  showHistoryEl(cityHistory);
   saveWeather();
 };
 
@@ -85,7 +96,7 @@ var getFiveDaysWeather = function (city) {
           if (weather.city.toUpperCase() === city.toUpperCase()) {
             var myList = [];
             data.list.filter((day) => {
-              if (day.dt_txt.endsWith("00:00:00")) {
+              if (day.dt_txt.endsWith("15:00:00")) {
                 myList.push(day);
               }
             });
@@ -112,8 +123,6 @@ var getUviIndex = async function (coord) {
 
 // remove all elements
 var resetEl = function () {
-  historyEl.removeClass("border-top border-dark");
-  historyEl.empty();
   weatherCol.empty();
   weatherCol.removeClass("bg-white border border-dark p-3 rounded");
   forecast.empty();
@@ -127,6 +136,7 @@ var getWeather = function (city) {
     .then(function (response) {
       if (response.ok) {
         response.json().then(async function (data) {
+          addToHistory(city);
           var uvi = await getUviIndex(data.coord);
           var weather = {
             city: data.name,
@@ -153,8 +163,18 @@ var getWeather = function (city) {
       errorMessage("Check your connection and try again");
     });
   resetEl();
-  showHistoryEl(cityHistory);
 };
+
+function addToHistory(city) {
+  console.log(city);
+  var btn = $("<button>");
+  btn.addClass("btn btn-history mt-1 mb-1 text-capitalize");
+  btn.text(city);
+  historyEl.append(btn);
+  $(".btn-history").click(function () {
+    historyBtnHandler($(this).index());
+  });
+}
 
 // check if city is in history
 var checkWeatherExist = function (city) {
@@ -200,23 +220,16 @@ var searchHandler = function (e) {
 
 // history btn handler
 var historyBtnHandler = function (num) {
-    resetEl();
-    showWeather(cityHistory.city[num]);
-    showFiveDaysWeather(cityHistory.city[num].forecast);
+  resetEl();
+  showWeather(cityHistory.city[num]);
+  showFiveDaysWeather(cityHistory.city[num].forecast);
 };
 
 // show city history
 function showHistoryEl(data) {
   data.city.forEach((weather) => {
-    var btn = $("<button>");
-    btn.addClass("btn btn-history mt-1 mb-1");
-    btn.text(weather.city);
-    historyEl.addClass("border-top border-dark");
-    historyEl.append(btn);
+    addToHistory(weather.city);
   });
-    $(".btn-history").click(function () {
-        historyBtnHandler($(this).index());
-    });
 }
 
 // on page load get local storage history and set object
