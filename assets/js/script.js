@@ -131,7 +131,6 @@ var resetEl = function () {
 
 // fetch weather
 var getWeather = function (city) {
-  // var url = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=6&appid=${apiKey}&units=imperial`;
   var url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
   fetch(url)
     .then(function (response) {
