@@ -30,7 +30,7 @@ var showWeather = function (data) {
   }
 
   weatherCol.addClass("bg-white border border-dark p-3 rounded");
-  var h2 = `<h2>${data.city} (${today}) <img class='weather-icon btn-history rounded-circle' 
+  var h2 = `<h2 class="fw-bold">${data.city} (${today}) <img class='weather-icon btn-history rounded-circle' 
   src='https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png' alt='' /></h2>`;
   var p = `<p>Temp: ${data.temp}ºF</p>
     <p>Wind: ${data.wind} MPH</p>
@@ -96,7 +96,7 @@ var getFiveDaysWeather = function (city) {
           if (weather.city.toUpperCase() === city.toUpperCase()) {
             var myList = [];
             data.list.filter((day) => {
-              if (day.dt_txt.endsWith("15:00:00")) {
+              if (day.dt_txt.endsWith("00:00:00")) {
                 myList.push(day);
               }
             });
@@ -131,6 +131,7 @@ var resetEl = function () {
 
 // fetch weather
 var getWeather = function (city) {
+  // var url = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=6&appid=${apiKey}&units=imperial`;
   var url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
   fetch(url)
     .then(function (response) {
