@@ -166,7 +166,6 @@ var getWeather = function (city) {
 };
 
 function addToHistory(city) {
-  console.log(city);
   var btn = $("<button>");
   btn.addClass("btn btn-history mt-1 mb-1 text-capitalize");
   btn.text(city);
@@ -178,20 +177,33 @@ function addToHistory(city) {
 
 // check if city is in history
 var checkWeatherExist = function (city) {
-  if (!!cityHistory.city.length) {
-    cityHistory.city.forEach((weather) => {
-      if (weather.city.toUpperCase() === city.toUpperCase()) {
-        cityHistory.city.splice(cityHistory.city.indexOf(weather), 1);
-      }
-    });
+  var cityExist = false;
+  var index = 0;
+  cityHistory.city.forEach((weather) => {
+    if (weather.city.toUpperCase() === city.toUpperCase()) {
+      cityExist = true;
+      index = cityHistory.city.indexOf(weather);
+    }
+  });
+  if (!cityExist) {
+    getWeather(city);
+  } else {
+    historyBtnHandler(index);
   }
-  getWeather(city);
+  return;
 };
 
 // search handler
 var searchHandler = function (e) {
   e.preventDefault();
   var city = search.val().trim();
+
+  // capitalize first letter after every space
+  city = city.split(" ");
+  city.forEach((word, index) => {
+    city[index] = word.charAt(0).toUpperCase() + word.slice(1);
+  });
+  city = city.join(" ");
 
   // city is empty show warning message
   if (!city) {
