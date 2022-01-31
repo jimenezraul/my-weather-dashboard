@@ -169,7 +169,7 @@ function addToHistory(city) {
   var btn = $("<button>");
   btn.addClass("btn btn-history mt-1 mb-1 text-capitalize");
   btn.text(city);
-  historyEl.append(btn);
+  historyEl.prepend(btn);
   $(".btn-history").click(function () {
     historyBtnHandler($(this).index());
   });
